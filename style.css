@@ -1,0 +1,85 @@
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font:14px Tahoma,Verdana,Arial,sans-serif;color:#111;background:#1680c7}
+
+/* Fondo principal */
+.desktop {
+  min-height: 100vh;
+  padding: 58px 7vw 75px;
+  background: linear-gradient(#0084ff08, #0084ff08), url("Decoracion/FondoWeb.jpg") center/cover fixed no-repeat;
+}
+
+.topbar{position:fixed;z-index:20;top:0;left:0;width:100%;min-height:42px;display:flex;align-items:center;justify-content:space-between;padding:5px 12px;color:white;background:linear-gradient(#3c95ec,#0758b9 48%,#06459a);border-bottom:2px solid #003c83;box-shadow:0 2px 8px #0008}
+.brand{display:flex;align-items:center;gap:8px}.brand>span{display:grid;place-items:center;width:28px;height:28px;color:#ffe100;background:#0a4b9c;border:1px solid #8bc4ff}.brand small{display:block;font-size:10px;opacity:.85}
+nav{display:flex;gap:3px}nav a{padding:7px 9px;color:white;text-decoration:none}nav a:hover{background:#ffffff25}
+
+/* Estilos de las ventanas */
+.window{max-width:1000px;margin:0 auto 28px;background:#d9d9d9;border:2px solid white;border-right-color:#333;border-bottom-color:#333;box-shadow:5px 6px 14px #0008; display: none;}
+.active-window {display: block; animation: popIn 0.2s ease-out;}
+@keyframes popIn {0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; }}
+
+.titlebar{min-height:28px;display:flex;align-items:center;justify-content:space-between;padding:3px 5px 3px 8px;color:white;font-weight:bold;background:linear-gradient(90deg,#0b5fca,#2789e9 70%,#0752aa)}
+.titlebar span{display:flex;align-items:center;gap:6px;}
+.titlebar-icon{width:18px;height:18px;object-fit:contain;}
+
+.buttons{display:flex;gap:3px}.buttons button{width:20px;height:19px;padding:0;font-weight:bold;background:#d9d9d9;border:2px solid white;border-right-color:#555;border-bottom-color:#555;cursor:pointer;}
+.buttons button:active{border:2px solid #555;border-right-color:white;border-bottom-color:white;}
+.content{padding:22px;border:2px solid #aaa;border-top:0}.hero{display:grid;grid-template-columns:1.5fr .8fr;gap:30px;align-items:center;min-height:330px;background:linear-gradient(135deg,#fff,#e9f2fc)}
+.status{color:#087d24;font-size:11px;font-weight:bold;letter-spacing:1px}h1{margin:8px 0;color:#064c9e;font-size:clamp(34px,6vw,62px);line-height:.95;text-shadow:2px 2px white}h2{margin-top:0;color:#064c9e;font-size:25px}.lead{max-width:600px;font-size:16px;line-height:1.6}.muted{color:#555}
+.xp-button{display:inline-block;margin:10px 8px 0 0;padding:8px 15px;color:#111;font-weight:bold;text-decoration:none;background:linear-gradient(#fff,#d4d4d4);border:2px solid white;border-right-color:#555;border-bottom-color:#555;cursor:pointer;}.xp-button:hover{background:linear-gradient(#eaf5ff,#bcdcff)}.xp-button:active{border:2px solid #555;border-right-color:white;border-bottom-color:white;}
+.computer{text-align:center}.monitor{padding:12px;background:#c8c8c8;border:3px solid white;border-right-color:#555;border-bottom-color:#555}.screen{min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#67ff75;background:#071b0b;border:7px solid #333;font:16px "Courier New",monospace;box-shadow:inset 0 0 25px #0bff3155}.screen b{font-size:25px}.screen small{color:white}.base{width:45%;height:20px;margin:auto;background:#aaa;border:2px solid white;border-right-color:#555}
+
+/* Iconos del Escritorio */
+.icons{max-width:1000px;margin:0 auto 28px;display:flex;flex-wrap:wrap;gap:20px}.icons a{width:100px;padding:8px;color:white;text-align:center;text-decoration:none;text-shadow:1px 1px #000;cursor:pointer;}.icons span{display:block;margin-bottom:6px;font-size:38px}.icons a:hover{background:#1567bc88;outline:1px dotted white}
+
+.icon-img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 6px;
+  filter: drop-shadow(1px 2px 3px rgba(0,0,0,0.5));
+}
+
+.round-icon {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Sección About Me */
+.two{display:grid;grid-template-columns:1.5fr 1fr;gap:25px}.two p{line-height:1.65}.info{padding:5px;background:white;border:2px inset #eee}.info div{display:flex;justify-content:space-between;gap:15px;padding:11px 8px;border-bottom:1px solid #ddd}.info div:last-child{border:0}.online{color:#087d24}
+
+.profile-img {
+  max-width: 100%;
+  height: auto;
+  border: 3px solid white;
+  border-right-color: #555;
+  border-bottom-color: #555;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+  margin-bottom: 15px;
+}
+
+/* Icono Secreto */
+.secret-icon {opacity: 0.05; transition: opacity 0.3s;}
+.secret-icon:hover {opacity: 1;}
+
+/* Music Player */
+.music-player {display: flex; flex-direction: column; gap: 10px; background: #eee; padding: 15px; border: 2px inset #fff;}
+.track {display: flex; justify-content: space-between; align-items: center; background: white; padding: 8px; border: 1px solid #ccc; font-weight: bold;}
+audio {height: 25px;}
+
+/* Photo Gallery */
+.photo-grid {display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 15px;}
+
+/* Downloads List */
+.file-list {list-style: none; padding: 0; margin: 0; background: white; border: 2px inset #ddd;}
+.file-list li {padding: 10px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px;}
+.file-list li:hover {background: #e6f0fa;}
+.file-list a {color: #064c9e; font-weight: bold; text-decoration: none;}
+
+/* Taskbar */
+.taskbar{position:fixed;z-index:30;bottom:0;left:0;width:100%;height:36px;display:flex;align-items:center;gap:7px;padding:3px 6px;color:white;background:linear-gradient(#3d96e9,#0758b8);border-top:2px solid #73b8f5;box-shadow:0 -2px 8px #0007}.start,.task{height:28px;display:flex;align-items:center;padding:0 12px;background:linear-gradient(#48a34c,#16721d);border:2px solid white;border-right-color:#245424;border-bottom-color:#245424}.task{background:#176ac1;border-right-color:#06437e;border-bottom-color:#06437e}.clock{margin-left:auto;padding-right:8px;font-size:11px}
+
+/* Hit Counter */
+.hit-counter {margin-left: auto; margin-right: 15px; background: black; color: #0f0; padding: 3px 8px; font-family: "Courier New", monospace; font-weight: bold; border: 2px solid #555; border-top-color: #222; border-left-color: #222; box-shadow: inset 0 0 5px rgba(0,255,0,0.5);}
+.hit-counter span {color: white;}
+
+@media(max-width:760px){.topbar{position:absolute;align-items:flex-start}nav{display:none}.desktop{padding:58px 12px 70px;background-attachment:scroll}.hero,.two,.cards{grid-template-columns:1fr}.computer{max-width:300px;margin:auto}.content{padding:15px}}

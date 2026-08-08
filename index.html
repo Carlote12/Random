@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="An anonymous personal corner of the Internet.">
+<title>unknown.exe</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><span>★</span><div><b>unknown.exe</b><small>personal space • v2.0</small></div></div>
+  <nav>
+    <a href="#" onclick="openWindow('home')">Home</a>
+    <a href="#" onclick="openWindow('about')">About</a>
+    <a href="#" onclick="openWindow('music')">Music</a>
+    <a href="#" onclick="openWindow('gallery')">Gallery</a>
+    <a href="#" onclick="openWindow('downloads')">Downloads</a>
+  </nav>
+</header>
+
+<main class="desktop">
+
+<div class="icons">
+  <a href="#" onclick="openWindow('about')">
+    <img src="Decoracion/yo.jpg" alt="About Me" class="icon-img round-icon">
+    <b>About Me</b>
+  </a>
+  <a href="#" onclick="openWindow('music')">
+    <img src="Decoracion/Logo1.png" alt="Music" class="icon-img">
+    <b>My Music</b>
+  </a>
+  <a href="#" onclick="openWindow('gallery')">
+    <img src="Decoracion/Logo2.png" alt="Gallery" class="icon-img">
+    <b>Gallery</b>
+  </a>
+  <a href="#" onclick="openWindow('downloads')">
+    <img src="Decoracion/Logo3.png" alt="Downloads" class="icon-img">
+    <b>Downloads</b>
+  </a>
+  <a href="#" class="secret-icon" onclick="openWindow('secret')">
+    <span>📁</span>
+    <b>???</b>
+  </a>
+</div>
+
+<section class="window active-window" id="home">
+  <div class="titlebar"><span>🖥️ welcome.exe</span><div class="buttons"><button onclick="closeWindow('home')">_</button><button>□</button><button onclick="closeWindow('home')">×</button></div></div>
+  <div class="content hero">
+    <div>
+      <p class="status">● SYSTEM ONLINE</p>
+      <h1>Welcome to my little corner of the Internet.</h1>
+      <p class="lead">I'm a teenager who likes technology, creative projects, random ideas and learning how things work.</p>
+      <a class="xp-button" href="#" onclick="openWindow('about')">Open my profile →</a>
+    </div>
+    <div class="computer"><div class="monitor"><div class="screen"><span>WELCOME</span><b>USER_001</b><small>online...</small></div></div><div class="base"></div></div>
+  </div>
+</section>
+
+<section class="window" id="about">
+  <div class="titlebar">
+    <span><img src="Decoracion/yo.jpg" class="titlebar-icon round-icon" alt="Perfil"> about_me.txt</span>
+    <div class="buttons"><button onclick="closeWindow('about')">_</button><button>□</button><button onclick="closeWindow('about')">×</button></div>
+  </div>
+  <div class="content two">
+    <div>
+      <h2>A little bit about me</h2>
+      <img src="Decoracion/yo.jpg" alt="Mi Foto de Perfil" class="profile-img">
+      <p>I'm a teenager interested in technology, computers, programming and making things from scratch.</p>
+    </div>
+    <div class="info">
+      <div><span>Age</span><b>Teenager</b></div>
+      <div><span>Interests</span><b>Tech / Space / Games</b></div>
+      <div><span>Currently</span><b class="online">● Learning</b></div>
+      <div><span>Favorite OS</span><b>Old Windows vibes</b></div>
+      <div><span>Location</span><b>Classified :P</b></div>
+    </div>
+  </div>
+</section>
+
+<section class="window" id="music">
+  <div class="titlebar">
+    <span><img src="Decoracion/Logo1.png" class="titlebar-icon" alt="Música"> music_player.exe</span>
+    <div class="buttons"><button onclick="closeWindow('music')">_</button><button>□</button><button onclick="closeWindow('music')">×</button></div>
+  </div>
+  <div class="content">
+    <h2>Mi Playlist Retro</h2>
+    <div class="music-player">
+      <div class="track">▶ Pista 1 - Canción Épica.mp3 <audio controls><source src="#" type="audio/mpeg"></audio></div>
+      <div class="track">▶ Pista 2 - Chill Vibes.mp3 <audio controls><source src="#" type="audio/mpeg"></audio></div>
+      <div class="track">▶ Pista 3 - Coding Music.mp3 <audio controls><source src="#" type="audio/mpeg"></audio></div>
+    </div>
+  </div>
+</section>
+
+<section class="window" id="gallery">
+  <div class="titlebar">
+    <span><img src="Decoracion/Logo2.png" class="titlebar-icon" alt="Galería"> photo_gallery.exe</span>
+    <div class="buttons"><button onclick="closeWindow('gallery')">_</button><button>□</button><button onclick="closeWindow('gallery')">×</button></div>
+  </div>
+  <div class="content">
+    <h2>My Photos</h2>
+    <div class="photo-grid">
+      </div>
+  </div>
+</section>
+
+<section class="window" id="downloads">
+  <div class="titlebar">
+    <span><img src="Decoracion/Logo3.png" class="titlebar-icon" alt="Archivos"> downloads_folder</span>
+    <div class="buttons"><button onclick="closeWindow('downloads')">_</button><button>□</button><button onclick="closeWindow('downloads')">×</button></div>
+  </div>
+  <div class="content">
+    <h2>Cosas Random para Descargar</h2>
+    <ul class="file-list">
+      <li><span>📄</span> <a href="#">mis_notas_secretas.txt</a> (2 KB)</li>
+      <li><span>🎮</span> <a href="#">juego_raro.exe</a> (15 MB)</li>
+      <li><span>🖼️</span> <a href="#">wallpaper_cool.png</a> (3 MB)</li>
+      <li><span>📦</span> <a href="#">cosas_random.zip</a> (8 MB)</li>
+    </ul>
+  </div>
+</section>
+
+<section class="window" id="secret">
+  <div class="titlebar"><span>⚠️ TOP_SECRET.bat</span><div class="buttons"><button onclick="closeWindow('secret')">_</button><button>□</button><button onclick="closeWindow('secret')">×</button></div></div>
+  <div class="content" style="background: black; color: #0f0; font-family: monospace;">
+    <h2>ACCESS GRANTED</h2>
+    <p>¡Encontraste la carpeta secreta! Felicitaciones 🕵️‍♂️.</p>
+    <p>Acá puedes poner easter eggs, pistas para juegos, o mensajes ocultos.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="taskbar">
+  <div class="start">⊞ <b>Start</b></div>
+  <div class="task">🖥️ unknown.exe</div>
+  
+  <div class="hit-counter">
+    VISITAS: <span>001337</span>
+  </div>
+  
+  <div class="clock">ONLINE</div>
+</footer>
+
+<script>
+  // Script para manejar las ventanas (pestañas)
+  function openWindow(windowId) {
+    let windows = document.querySelectorAll('.window');
+    windows.forEach(win => {
+      win.classList.remove('active-window');
+    });
+    document.getElementById(windowId).classList.add('active-window');
+  }
+
+  function closeWindow(windowId) {
+    document.getElementById(windowId).classList.remove('active-window');
+    document.getElementById('home').classList.add('active-window');
+  }
+</script>
+</body>
+</html>
