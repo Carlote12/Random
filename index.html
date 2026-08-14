@@ -3,161 +3,451 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="An anonymous personal corner of the Internet.">
-<title>unknown.exe</title>
-<link rel="stylesheet" href="style.css">
+<meta name="description" content="Carlo's personal site">
+<title>carlos_site.exe</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+  /* --- ESTILOS GENERALES Y VARIABLES --- */
+  :root {
+    --win-bg: #c0c0c0;
+    --win-border-light: #ffffff;
+    --win-border-dark: #000000;
+    --win-border-shadow: #808080;
+    --win-title-bg: linear-gradient(90deg, #000080, #1084d0); 
+    --win-text: #000000;
+    --teal-bg: #4aa9bd;
+  }
+
+  body {
+    background-image: url('Decoracion/FondoWeb.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-color: var(--teal-bg);
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: var(--win-text);
+  }
+
+  a { color: var(--win-text); }
+
+  /* --- VENTANA PRINCIPAL --- */
+  .window {
+    background-color: var(--win-bg);
+    border: 2px solid var(--win-border-light);
+    border-right-color: var(--win-border-dark);
+    border-bottom-color: var(--win-border-dark);
+    width: 100%;
+    max-width: 950px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+    padding: 3px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* --- BARRA DE TÍTULO --- */
+  .titlebar {
+    background: var(--win-title-bg);
+    color: white;
+    padding: 4px 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+  }
+
+  .titlebar-buttons { display: flex; gap: 3px; }
+
+  .title-btn {
+    background-color: var(--win-bg);
+    border: 2px solid;
+    border-color: var(--win-border-light) var(--win-border-shadow) var(--win-border-shadow) var(--win-border-light);
+    width: 20px;
+    height: 20px;
+    font-weight: bold;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: black;
+    padding: 0;
+  }
+  
+  .title-btn:active {
+    border-color: var(--win-border-shadow) var(--win-border-light) var(--win-border-light) var(--win-border-shadow);
+  }
+
+  /* --- PESTAÑAS (TABS) --- */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-top: 15px;
+    padding: 0 10px;
+  }
+
+  .tab {
+    background-color: var(--win-bg);
+    border: 2px solid;
+    border-color: var(--win-border-light) var(--win-border-shadow) var(--win-border-dark) var(--win-border-light);
+    border-bottom: none;
+    padding: 6px 15px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 0.95rem;
+    margin-bottom: -2px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    transition: background-color 0.2s;
+  }
+
+  .tab:hover {
+    background-color: #d4d4d4;
+  }
+
+  .tab.active {
+    background-color: var(--win-bg);
+    border-color: var(--win-border-light) var(--win-border-shadow) var(--win-bg) var(--win-border-light);
+    position: relative;
+    z-index: 1;
+    padding-top: 8px; 
+  }
+
+  /* --- CONTENIDO DE LAS PESTAÑAS --- */
+  .tab-content {
+    display: none;
+    padding: 20px;
+    background-color: var(--win-bg);
+    border: 2px solid;
+    border-color: var(--win-border-light) var(--win-border-shadow) var(--win-border-shadow) var(--win-border-light);
+    min-height: 400px;
+  }
+
+  .tab-content.active { display: block; }
+
+  /* --- ABOUT ME --- */
+  .about-container { display: flex; justify-content: space-between; }
+  .about-text h1 { margin-top: 0; margin-bottom: 5px; color: #000080; }
+  .about-text h3 { margin-top: 0; font-weight: bold; color: #555; }
+  .about-text ul { line-height: 1.7; padding-left: 20px; }
+  .about-profile { text-align: right; width: 250px; }
+  .profile-pic {
+    width: 200px;
+    height: 200px;
+    background-color: #333; 
+    border-radius: 10px; 
+    margin-bottom: 15px;
+    display: inline-block;
+    border: 3px inset var(--win-border-shadow);
+    object-fit: cover; /* A la foto de perfil se le deja el cover para que llene el recuadro */
+  }
+  .social-links p {
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    font-weight: bold;
+    background: #fff;
+    padding: 5px;
+    border: 1px solid var(--win-border-shadow);
+  }
+  .social-icon { width: 35px; height: 35px; object-fit: contain; }
+
+  /* --- MINI VENTANAS --- */
+  .mini-window {
+    border: 2px solid;
+    border-color: var(--win-border-light) var(--win-border-shadow) var(--win-border-shadow) var(--win-border-light);
+    background: var(--win-bg);
+    margin-bottom: 15px;
+  }
+  
+  .mini-titlebar {
+    background: var(--win-title-bg);
+    color: white;
+    padding: 2px 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 0.85rem;
+  }
+  
+  .mini-content { padding: 10px; display: flex; gap: 15px; }
+  .fun-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+  .album-art { width: 100px; height: 100px; background-color: black; border: 2px inset var(--win-border-shadow); object-fit: cover; }
+
+  /* --- FOTOS ROTATIVAS (ARREGLADO) --- */
+  .photo-container {
+    width: 100%;
+    height: 180px; /* Le damos un espacio fijo a la cajita para que no salte todo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .photo-slideshow {
+    max-width: 100%;
+    max-height: 100%; /* Permite que la foto tome su forma original sin hacerle zoom */
+    object-fit: contain;
+    border: 4px solid #fff; /* Marco blanco */
+    border-bottom: 16px solid #fff; /* Borde de abajo grueso estilo Polaroid */
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.5); /* Sombra para que la foto "resalte" del fondo */
+    transition: opacity 0.5s ease-in-out; 
+  }
+
+  /* --- BARRA DE ESTADO INFERIOR --- */
+  .status-bar {
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    border: 2px solid;
+    border-color: var(--win-border-shadow) var(--win-border-light) var(--win-border-light) var(--win-border-shadow);
+    padding: 2px 10px;
+    font-size: 0.85rem;
+  }
+  .status-section {
+    border-right: 2px solid var(--win-border-shadow);
+    border-left: 2px solid var(--win-border-light);
+    padding: 0 15px;
+  }
+  .status-section:first-child { border-left: none; padding-left: 0; }
+  .status-section:last-child { border-right: none; padding-right: 0; }
+</style>
 </head>
 <body>
 
-<header class="topbar">
-  <div class="brand"><span>★</span><div><b>unknown.exe</b><small>personal space • v2.0</small></div></div>
-  <nav>
-    <a href="#" onclick="openWindow('home')">Home</a>
-    <a href="#" onclick="openWindow('about')">About</a>
-    <a href="#" onclick="openWindow('music')">Music</a>
-    <a href="#" onclick="openWindow('gallery')">Gallery</a>
-    <a href="#" onclick="openWindow('downloads')">Downloads</a>
-  </nav>
-</header>
+<div class="window">
+  <div class="titlebar">
+    <span>carlotes_site.exe</span>
+    <div class="titlebar-buttons">
+      <button class="title-btn">_</button>
+      <button class="title-btn">□</button>
+      <button class="title-btn">X</button>
+    </div>
+  </div>
 
-<main class="desktop">
+  <div class="tabs">
+    <button class="tab active" onclick="openTab(event, 'about')">about me.html</button>
+    <button class="tab" onclick="openTab(event, 'map')">travel map.html</button>
+    <button class="tab" onclick="openTab(event, 'blog')">blog.html</button>
+    <button class="tab" onclick="openTab(event, 'fun')">fun stuff.html</button>
+  </div>
 
-<div class="icons">
-  <a href="#" onclick="openWindow('about')">
-    <img src="Decoracion/yo.jpg" alt="About Me" class="icon-img round-icon">
-    <b>About Me</b>
-  </a>
-  <a href="#" onclick="openWindow('music')">
-    <img src="Decoracion/Logo1.png" alt="Music" class="icon-img">
-    <b>My Music</b>
-  </a>
-  <a href="#" onclick="openWindow('gallery')">
-    <img src="Decoracion/Logo2.png" alt="Gallery" class="icon-img">
-    <b>Gallery</b>
-  </a>
-  <a href="#" onclick="openWindow('downloads')">
-    <img src="Decoracion/Logo3.png" alt="Downloads" class="icon-img">
-    <b>Downloads</b>
-  </a>
-  <a href="#" class="secret-icon" onclick="openWindow('secret')">
-    <span>📁</span>
-    <b>???</b>
-  </a>
+  <div id="about" class="tab-content active">
+    <div class="about-container">
+      <div class="about-text">
+        <h1>hey there! i'm Carlote</h1>
+        <h3>(Alien, 13 y/o from Mars )</h3>
+        <p>here's some of the stuff i like doing:</p>
+        <ul>
+          <li>play videogames (KSP, and Hearts of Iron but not much!)</li>
+          <li>listen to music (would name artists but my music taste changes daily lol)</li>
+          <li>do projects! mainly software stuff now</li>
+          <li>watch movies and tv shows</li>
+          <li>hang out with friends</li>
+          <li>think and overthink</li>
+        </ul>
+      </div>
+      <div class="about-profile">
+        <img src="Logos/yo.jpg" alt="Profile" class="profile-pic">
+        <div class="social-links">
+          <p><img src="Logos/Logo3.png" alt="Logo 1" class="social-icon"> carlote_12</p>
+          <p><img src="Logos/Logo2.png" alt="Logo 2" class="social-icon"> @carloteaug</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="map" class="tab-content">
+    <div style="width: 100%; height: 450px; border: 3px inset var(--win-border-shadow);">
+      <div id="miMapa" style="width: 100%; height: 100%;"></div>
+    </div>
+  </div>
+
+  <div id="blog" class="tab-content">
+    <h2>mi mini-blog</h2>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 250px; border: 2px dashed var(--win-border-shadow); margin-top: 20px; background-color: #e8e8e8;">
+      <span style="font-size: 40px; margin-bottom: 10px;">🚧</span>
+      <h3 style="margin: 0;">coming soon...</h3>
+      <p style="color: #555;">estoy programando un blogcito para esta sección. ¡vuelve pronto!</p>
+    </div>
+  </div>
+
+  <div id="fun" class="tab-content">
+    <div class="fun-grid">
+      
+      <div class="mini-window">
+        <div class="mini-titlebar">
+          <span>🎵 i'm listening to</span>
+          <button class="title-btn">X</button>
+        </div>
+        <div class="mini-content" style="align-items: center;">
+          <img id="music-art" class="album-art" src="" alt="Album Art">
+          <div>
+            <h3 id="music-title" style="margin:0;">Cargando música...</h3>
+            <p id="music-artist" style="margin:5px 0; color: #555;"></p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mini-window">
+        <div class="mini-titlebar">
+          <span>📷 my camera roll</span>
+          <button class="title-btn">X</button>
+        </div>
+        <div class="mini-content" style="padding: 10px; flex-direction: column; align-items: center;">
+          <div class="photo-container">
+            <img id="mis-fotos" class="photo-slideshow" src="Fotos/foto1.jpg" alt="Mis capturas">
+          </div>
+          <small style="margin-top: 5px; color: #555;">fotografías por Carlote</small>
+        </div>
+      </div>
+
+      <div class="mini-window">
+        <div class="mini-titlebar">
+          <span>🌤️ weather report</span>
+          <button class="title-btn">X</button>
+        </div>
+        <div class="mini-content" style="align-items: center;">
+          <span id="weather-icon" style="font-size: 40px;">⏳</span>
+          <div>
+            <h3 id="weather-desc" style="margin:0; text-transform: capitalize;">Cargando clima...</h3>
+            <p id="weather-temp" style="margin: 5px 0; font-weight:bold; color: #000080;"></p>
+            <small style="font-size: 10px;">data from openweathermap.org</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="mini-window">
+        <div class="mini-titlebar">
+          <span>little doodling space</span>
+          <button class="title-btn">X</button>
+        </div>
+        <div class="mini-content" style="padding: 0; border: 2px inset var(--win-border-shadow);">
+           <iframe src="https://jspaint.app" width="100%" height="200px" style="border:none; display: block;"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <div class="status-section" style="flex-grow: 1;">Status: Online & Ready</div>
+    <div class="status-section">Visitor ID: 042</div>
+    <div class="status-section" id="reloj">00:00:00</div>
+  </div>
+
 </div>
 
-<section class="window active-window" id="home">
-  <div class="titlebar"><span>🖥️ welcome.exe</span><div class="buttons"><button onclick="closeWindow('home')">_</button><button>□</button><button onclick="closeWindow('home')">×</button></div></div>
-  <div class="content hero">
-    <div>
-      <p class="status">● SYSTEM ONLINE</p>
-      <h1>Welcome to my little corner of the Internet.</h1>
-      <p class="lead">I'm a teenager who likes technology, creative projects, random ideas and learning how things work.</p>
-      <a class="xp-button" href="#" onclick="openWindow('about')">Open my profile →</a>
-    </div>
-    <div class="computer"><div class="monitor"><div class="screen"><span>WELCOME</span><b>USER_001</b><small>online...</small></div></div><div class="base"></div></div>
-  </div>
-</section>
-
-<section class="window" id="about">
-  <div class="titlebar">
-    <span><img src="Decoracion/yo.jpg" class="titlebar-icon round-icon" alt="Perfil"> about_me.txt</span>
-    <div class="buttons"><button onclick="closeWindow('about')">_</button><button>□</button><button onclick="closeWindow('about')">×</button></div>
-  </div>
-  <div class="content two">
-    <div>
-      <h2>A little bit about me</h2>
-      <img src="Decoracion/yo.jpg" alt="Mi Foto de Perfil" class="profile-img">
-      <p>I'm a teenager interested in technology, computers, programming and making things from scratch.</p>
-    </div>
-    <div class="info">
-      <div><span>Age</span><b>Teenager</b></div>
-      <div><span>Interests</span><b>Tech / Space / Games</b></div>
-      <div><span>Currently</span><b class="online">● Learning</b></div>
-      <div><span>Favorite OS</span><b>Old Windows vibes</b></div>
-      <div><span>Location</span><b>Classified :P</b></div>
-    </div>
-  </div>
-</section>
-
-<section class="window" id="music">
-  <div class="titlebar">
-    <span><img src="Decoracion/Logo1.png" class="titlebar-icon" alt="Música"> music_player.exe</span>
-    <div class="buttons"><button onclick="closeWindow('music')">_</button><button>□</button><button onclick="closeWindow('music')">×</button></div>
-  </div>
-  <div class="content">
-    <h2>Mi Playlist Retro</h2>
-    <div class="music-player">
-      <div class="track">▶ Pista 1 - Canción Épica.mp3 <audio controls><source src="#" type="audio/mpeg"></audio></div>
-      <div class="track">▶ Pista 2 - Chill Vibes.mp3 <audio controls><source src="#" type="audio/mpeg"></audio></div>
-      <div class="track">▶ Pista 3 - Coding Music.mp3 <audio controls><source src="#" type="audio/mpeg"></audio></div>
-    </div>
-  </div>
-</section>
-
-<section class="window" id="gallery">
-  <div class="titlebar">
-    <span><img src="Decoracion/Logo2.png" class="titlebar-icon" alt="Galería"> photo_gallery.exe</span>
-    <div class="buttons"><button onclick="closeWindow('gallery')">_</button><button>□</button><button onclick="closeWindow('gallery')">×</button></div>
-  </div>
-  <div class="content">
-    <h2>My Photos</h2>
-    <div class="photo-grid">
-      </div>
-  </div>
-</section>
-
-<section class="window" id="downloads">
-  <div class="titlebar">
-    <span><img src="Decoracion/Logo3.png" class="titlebar-icon" alt="Archivos"> downloads_folder</span>
-    <div class="buttons"><button onclick="closeWindow('downloads')">_</button><button>□</button><button onclick="closeWindow('downloads')">×</button></div>
-  </div>
-  <div class="content">
-    <h2>Cosas Random para Descargar</h2>
-    <ul class="file-list">
-      <li><span>📄</span> <a href="#">mis_notas_secretas.txt</a> (2 KB)</li>
-      <li><span>🎮</span> <a href="#">juego_raro.exe</a> (15 MB)</li>
-      <li><span>🖼️</span> <a href="#">wallpaper_cool.png</a> (3 MB)</li>
-      <li><span>📦</span> <a href="#">cosas_random.zip</a> (8 MB)</li>
-    </ul>
-  </div>
-</section>
-
-<section class="window" id="secret">
-  <div class="titlebar"><span>⚠️ TOP_SECRET.bat</span><div class="buttons"><button onclick="closeWindow('secret')">_</button><button>□</button><button onclick="closeWindow('secret')">×</button></div></div>
-  <div class="content" style="background: black; color: #0f0; font-family: monospace;">
-    <h2>ACCESS GRANTED</h2>
-    <p>¡Encontraste la carpeta secreta! Felicitaciones 🕵️‍♂️.</p>
-    <p>Acá puedes poner easter eggs, pistas para juegos, o mensajes ocultos.</p>
-  </div>
-</section>
-
-</main>
-
-<footer class="taskbar">
-  <div class="start">⊞ <b>Start</b></div>
-  <div class="task">🖥️ unknown.exe</div>
-  
-  <div class="hit-counter">
-    VISITAS: <span>001337</span>
-  </div>
-  
-  <div class="clock">ONLINE</div>
-</footer>
-
 <script>
-  // Script para manejar las ventanas (pestañas)
-  function openWindow(windowId) {
-    let windows = document.querySelectorAll('.window');
-    windows.forEach(win => {
-      win.classList.remove('active-window');
-    });
-    document.getElementById(windowId).classList.add('active-window');
+  // --- 1. LÓGICA DE LAS PESTAÑAS ---
+  function openTab(evt, tabName) {
+    var tabcontent = document.getElementsByClassName("tab-content");
+    for (var i = 0; i < tabcontent.length; i++) tabcontent[i].classList.remove("active");
+
+    var tablinks = document.getElementsByClassName("tab");
+    for (var i = 0; i < tablinks.length; i++) tablinks[i].classList.remove("active");
+
+    document.getElementById(tabName).classList.add("active");
+    evt.currentTarget.classList.add("active");
+
+    if(tabName === 'map') {
+      setTimeout(() => { map.invalidateSize(); }, 100);
+    }
   }
 
-  function closeWindow(windowId) {
-    document.getElementById(windowId).classList.remove('active-window');
-    document.getElementById('home').classList.add('active-window');
+  // --- 2. EL MAPA ---
+  var map = L.map('miMapa').setView([0, -70], 3); 
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  L.marker([-31.4201, -64.1888]).addTo(map).bindPopup('📍 Córdoba, Argentina');
+  L.marker([-34.6037, -58.3816]).addTo(map).bindPopup('📍 Buenos Aires, Argentina');
+  L.marker([-25.5165, -54.5854]).addTo(map).bindPopup('📍 Cataratas del Iguazú, Brasil');
+  L.marker([-8.4845, -34.9997]).addTo(map).bindPopup('📍 Porto de Galinhas, Brasil');
+  L.marker([8.9824, -79.5199]).addTo(map).bindPopup('📍 Ciudad de Panamá, Panamá');
+  L.marker([18.5601, -68.3725]).addTo(map).bindPopup('📍 Punta Cana, Rep. Dominicana');
+  L.marker([25.7617, -80.1918]).addTo(map).bindPopup('📍 Miami, FL, EE.UU.');
+  L.marker([28.5384, -81.3789]).addTo(map).bindPopup('📍 Orlando, FL, EE.UU.');
+  L.marker([40.7128, -74.0060]).addTo(map).bindPopup('📍 Nueva York, EE.UU.');
+
+  // --- 3. EL CLIMA ---
+  function getClima() {
+    const apiKey = "204754d0fadd9e55232e4644dd583d88"; 
+    const ciudad = "Villa Carlos Paz"; 
+
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${ciudad}&appid=${apiKey}&units=metric&lang=es`)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("weather-desc").innerText = data.weather[0].description;
+        document.getElementById("weather-temp").innerText = `${data.main.temp}°C - feels like ${data.main.feels_like}°C`;
+        document.getElementById("weather-icon").innerText = "☁️"; 
+      });
   }
+  getClima();
+
+  // --- 4. LA MÚSICA ---
+  function getMusica() {
+    const user = "CarloteAug"; 
+    const apiKey = "87843c2ddae089d950ed03fc662530ed"; 
+
+    fetch(`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${user}&api_key=${apiKey}&format=json&limit=1`)
+      .then(response => response.json())
+      .then(data => {
+        if(data.recenttracks && data.recenttracks.track && data.recenttracks.track.length > 0) {
+          const track = data.recenttracks.track[0];
+          document.getElementById("music-title").innerText = track.name;
+          document.getElementById("music-artist").innerText = track.artist["#text"];
+          if (track.image && track.image[2] && track.image[2]["#text"]) {
+              document.getElementById("music-art").src = track.image[2]["#text"];
+          }
+        } else {
+          document.getElementById("music-title").innerText = "Sin música aún...";
+          document.getElementById("music-artist").innerText = "¡Pon play en Spotify!";
+        }
+      }).catch(error => console.error("Error cargando música", error));
+  }
+  getMusica();
+
+  // --- 5. CARRUSEL DE FOTOS ---
+  const misFotos = [
+    "Fotos/foto1.jpg",
+    "Fotos/foto2.jpg",
+    "Fotos/foto3.jpg"
+  ];
+  let fotoActual = 0;
+  const elementoFoto = document.getElementById("mis-fotos");
+
+  setInterval(() => {
+    elementoFoto.style.opacity = 0; 
+    
+    setTimeout(() => {
+      fotoActual = (fotoActual + 1) % misFotos.length;
+      elementoFoto.src = misFotos[fotoActual];
+      elementoFoto.style.opacity = 1;
+    }, 500); 
+
+  }, 4000);
+
+  // --- 6. RELOJ ---
+  setInterval(() => {
+    const fecha = new Date();
+    document.getElementById("reloj").innerText = fecha.toLocaleTimeString();
+  }, 1000);
+
 </script>
 </body>
 </html>
