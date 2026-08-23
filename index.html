@@ -35,9 +35,12 @@
     align-items: center;
     min-height: 100vh;
     color: var(--win-text);
+    box-sizing: border-box;
   }
 
   a { color: var(--win-text); }
+  
+  * { box-sizing: border-box; } /* Ayuda a que los anchos no se rompan */
 
   /* --- VENTANA PRINCIPAL --- */
   .window {
@@ -112,9 +115,7 @@
     transition: background-color 0.2s;
   }
 
-  .tab:hover {
-    background-color: #d4d4d4;
-  }
+  .tab:hover { background-color: #d4d4d4; }
 
   .tab.active {
     background-color: var(--win-bg);
@@ -137,11 +138,13 @@
   .tab-content.active { display: block; }
 
   /* --- ABOUT ME --- */
-  .about-container { display: flex; justify-content: space-between; }
+  .about-container { display: flex; justify-content: space-between; gap: 20px; }
+  .about-text { flex: 1; }
   .about-text h1 { margin-top: 0; margin-bottom: 5px; color: #000080; }
   .about-text h3 { margin-top: 0; font-weight: bold; color: #555; }
   .about-text ul { line-height: 1.7; padding-left: 20px; }
-  .about-profile { text-align: right; width: 250px; }
+  
+  .about-profile { text-align: right; width: 250px; flex-shrink: 0; }
   .profile-pic {
     width: 200px;
     height: 200px;
@@ -150,7 +153,7 @@
     margin-bottom: 15px;
     display: inline-block;
     border: 3px inset var(--win-border-shadow);
-    object-fit: cover; /* A la foto de perfil se le deja el cover para que llene el recuadro */
+    object-fit: cover;
   }
   .social-links p {
     margin: 5px 0;
@@ -165,12 +168,32 @@
   }
   .social-icon { width: 35px; height: 35px; object-fit: contain; }
 
+  /* --- MAPA Y BLOG CLASES --- */
+  .map-wrapper {
+    width: 100%; 
+    height: 450px; 
+    border: 3px inset var(--win-border-shadow);
+  }
+  .blog-placeholder {
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    height: 250px; 
+    border: 2px dashed var(--win-border-shadow); 
+    margin-top: 20px; 
+    background-color: #e8e8e8;
+    text-align: center;
+    padding: 20px;
+  }
+
   /* --- MINI VENTANAS --- */
   .mini-window {
     border: 2px solid;
     border-color: var(--win-border-light) var(--win-border-shadow) var(--win-border-shadow) var(--win-border-light);
     background: var(--win-bg);
     margin-bottom: 15px;
+    height: 100%;
   }
   
   .mini-titlebar {
@@ -188,10 +211,10 @@
   .fun-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
   .album-art { width: 100px; height: 100px; background-color: black; border: 2px inset var(--win-border-shadow); object-fit: cover; }
 
-  /* --- FOTOS ROTATIVAS (ARREGLADO) --- */
+  /* --- FOTOS ROTATIVAS --- */
   .photo-container {
     width: 100%;
-    height: 180px; /* Le damos un espacio fijo a la cajita para que no salte todo */
+    height: 180px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -199,11 +222,11 @@
 
   .photo-slideshow {
     max-width: 100%;
-    max-height: 100%; /* Permite que la foto tome su forma original sin hacerle zoom */
+    max-height: 100%;
     object-fit: contain;
-    border: 4px solid #fff; /* Marco blanco */
-    border-bottom: 16px solid #fff; /* Borde de abajo grueso estilo Polaroid */
-    box-shadow: 2px 2px 6px rgba(0,0,0,0.5); /* Sombra para que la foto "resalte" del fondo */
+    border: 4px solid #fff;
+    border-bottom: 16px solid #fff; 
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.5);
     transition: opacity 0.5s ease-in-out; 
   }
 
@@ -221,9 +244,75 @@
     border-right: 2px solid var(--win-border-shadow);
     border-left: 2px solid var(--win-border-light);
     padding: 0 15px;
+    display: flex;
+    align-items: center;
   }
-  .status-section:first-child { border-left: none; padding-left: 0; }
+  .status-section:first-child { border-left: none; padding-left: 0; flex-grow: 1; }
   .status-section:last-child { border-right: none; padding-right: 0; }
+
+
+  /* =========================================================
+     MEDIA QUERIES PARA CELULARES (RESPONSIVE DESIGN) 
+     ========================================================= */
+  @media (max-width: 768px) {
+    body { padding: 10px; } /* Menos margen en celu */
+    
+    .tabs { 
+      flex-wrap: wrap; /* Permite que las pestañas bajen de línea */
+      gap: 2px;
+    }
+    
+    .tab {
+      flex: 1 1 45%; /* Ocupan la mitad del ancho disponible */
+      text-align: center;
+      margin-bottom: 2px;
+    }
+
+    .tab-content { padding: 15px 10px; }
+    
+    /* Pasa a 1 columna en "About me" */
+    .about-container { 
+      flex-direction: column; 
+      align-items: center; 
+    }
+    
+    .about-profile { 
+      width: 100%; 
+      text-align: center; 
+    }
+    
+    .social-links p { 
+      justify-content: center; /* Centra los logos de redes */
+    }
+
+    /* Pasa a 1 columna en "Fun Stuff" */
+    .fun-grid { grid-template-columns: 1fr; }
+
+    /* Ajusta mini contenidos (música, clima) para centrar info */
+    .mini-content { 
+      flex-direction: column; 
+      align-items: center; 
+      text-align: center;
+    }
+    
+    /* Reduce la altura del mapa para celulares */
+    .map-wrapper { height: 300px; }
+
+    /* Apila los textos de la barra de estado */
+    .status-bar {
+      flex-direction: column;
+      padding: 0;
+    }
+    
+    .status-section {
+      border: none;
+      border-bottom: 2px solid var(--win-border-shadow);
+      padding: 5px 10px;
+      justify-content: center; /* Centra el texto */
+    }
+    
+    .status-section:last-child { border-bottom: none; }
+  }
 </style>
 </head>
 <body>
@@ -271,17 +360,17 @@
   </div>
 
   <div id="map" class="tab-content">
-    <div style="width: 100%; height: 450px; border: 3px inset var(--win-border-shadow);">
+    <div class="map-wrapper">
       <div id="miMapa" style="width: 100%; height: 100%;"></div>
     </div>
   </div>
 
   <div id="blog" class="tab-content">
     <h2>mi mini-blog</h2>
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 250px; border: 2px dashed var(--win-border-shadow); margin-top: 20px; background-color: #e8e8e8;">
+    <div class="blog-placeholder">
       <span style="font-size: 40px; margin-bottom: 10px;">🚧</span>
       <h3 style="margin: 0;">coming soon...</h3>
-      <p style="color: #555;">estoy programando un blogcito para esta sección. ¡vuelve pronto!</p>
+      <p style="color: #555; margin-top: 5px;">estoy programando un blogcito para esta sección. ¡vuelve pronto!</p>
     </div>
   </div>
 
@@ -343,7 +432,7 @@
   </div>
 
   <div class="status-bar">
-    <div class="status-section" style="flex-grow: 1;">Status: Online & Ready</div>
+    <div class="status-section">Status: Online & Ready</div>
     <div class="status-section">Visitor ID: 042</div>
     <div class="status-section" id="reloj">00:00:00</div>
   </div>
