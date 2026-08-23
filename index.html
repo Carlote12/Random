@@ -374,7 +374,7 @@
     </div>
   </div>
   <div class="popup-body" style="text-align: center;">
-    <img src="Fotos/foto5.jpgs" alt="Foto secreta" style="max-width: 100%; height: auto; max-height: 300px; border: 3px inset var(--win-border-shadow); object-fit: contain;">
+    <img src="Fotos/foto5.jpg" alt="Foto secreta" style="max-width: 100%; height: auto; max-height: 300px; border: 3px inset var(--win-border-shadow); object-fit: contain;">
     <!-- ¡Aquí está la descripción que pediste! -->
     <p style="font-family: inherit; font-weight: bold; margin: 15px 0;">¡Esta foto la tome en el cumpleaños de mi mejos amiga! ✨</p>
     <button class="win-btn" onclick="cerrarNotificacion('ventana-foto')">Cerrar</button>
@@ -655,13 +655,17 @@
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
   L.marker([-31.4201, -64.1888]).addTo(map).bindPopup('📍 Córdoba, Argentina');
   L.marker([-34.6037, -58.3816]).addTo(map).bindPopup('📍 Buenos Aires, Argentina');
+  L.marker([-26.833210, -65.203711]).addTo(map).bindPopup('📍 Tucumán, Argentina');
+  L.marker([-27.784230, -64.264459]).addTo(map).bindPopup('📍 Santiago del Estero, Argentina');
   L.marker([-25.5165, -54.5854]).addTo(map).bindPopup('📍 Cataratas del Iguazú, Brasil');
   L.marker([-8.4845, -34.9997]).addTo(map).bindPopup('📍 Porto de Galinhas, Brasil');
+  L.marker([-5.784139, -35.199947]).addTo(map).bindPopup('📍 Natal, Brasil.');
   L.marker([8.9824, -79.5199]).addTo(map).bindPopup('📍 Ciudad de Panamá, Panamá');
   L.marker([18.5601, -68.3725]).addTo(map).bindPopup('📍 Punta Cana, Rep. Dominicana');
   L.marker([25.7617, -80.1918]).addTo(map).bindPopup('📍 Miami, FL, EE.UU.');
   L.marker([28.5384, -81.3789]).addTo(map).bindPopup('📍 Orlando, FL, EE.UU.');
   L.marker([40.7128, -74.0060]).addTo(map).bindPopup('📍 Nueva York, EE.UU.');
+
 
   function getClima() {
     const apiKey = "204754d0fadd9e55232e4644dd583d88"; const ciudad = "Villa Carlos Paz"; 
