@@ -37,14 +37,14 @@
     background-color: var(--teal-bg);
     font-family: 'Courier New', Courier, monospace;
     margin: 0;
-    padding: 0; /* Quitamos el padding para que el drag funcione mejor */
+    padding: 0; 
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     color: var(--win-text);
     box-sizing: border-box;
-    overflow: hidden; /* Evita barras de scroll raras al arrastrar */
+    overflow: hidden; 
   }
 
   a { color: var(--win-text); }
@@ -69,7 +69,7 @@
 
   /* --- VENTANA PRINCIPAL --- */
   #main-window {
-    position: absolute; /* Cambiado para poder arrastrarla */
+    position: absolute; 
     top: 5%;
     left: 50%;
     transform: translateX(-50%);
@@ -80,7 +80,7 @@
     border: 2px solid var(--win-border-light);
     border-right-color: var(--win-border-dark);
     border-bottom-color: var(--win-border-dark);
-    width: 95%; /* Ajuste para celular */
+    width: 95%; 
     max-width: 950px;
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
     padding: 3px;
@@ -101,7 +101,6 @@
     letter-spacing: 1px;
   }
   
-  /* Indicador visual de que se puede arrastrar */
   .draggable-header { cursor: move !important; }
 
   .titlebar-buttons { display: flex; gap: 3px; }
@@ -247,7 +246,7 @@
 
   /* --- POPUPS Y JUEGO --- */
   .popup-overlay {
-    position: absolute; /* Cambiado a absolute para poder arrastrarlo */
+    position: absolute; 
     top: 50%; left: 50%; transform: translate(-50%, -50%);
     width: 320px; z-index: 1000;
     display: none; 
@@ -281,7 +280,7 @@
   #bsod {
     position: fixed;
     top: 0; left: 0; width: 100vw; height: 100vh;
-    background-color: #0000AA; /* Azul clásico Windows */
+    background-color: #0000AA; 
     color: #FFFFFF;
     font-family: 'Courier New', Courier, monospace;
     z-index: 9999;
@@ -291,7 +290,7 @@
     align-items: center;
     text-align: center;
     padding: 20px;
-    cursor: none !important; /* Esconde el mouse para dar más miedo */
+    cursor: none !important; 
   }
   .bsod-text {
     text-align: left;
@@ -328,7 +327,7 @@
 </head>
 <body>
 
-<!-- PANTALLA AZUL DE LA MUERTE (Reemplaza la antigua ventana de castigo) -->
+<!-- PANTALLA AZUL DE LA MUERTE -->
 <div id="bsod">
   <div class="bsod-text">
     <div style="text-align: center;"><span class="bsod-bg">Windows</span></div>
@@ -410,7 +409,7 @@
   </div>
 </div>
 
-<!-- VENTANA VISOR DE FOTO -->
+<!-- VENTANA VISOR DE FOTO MODIFICADA -->
 <div id="ventana-foto" class="window popup-overlay" style="z-index: 1004;">
   <div class="titlebar draggable-header">
     <span>foto_secreta.jpg</span>
@@ -419,8 +418,8 @@
     </div>
   </div>
   <div class="popup-body" style="text-align: center;">
-    <img src="Fotos/foto5.jpg" alt="Foto secreta" style="max-width: 100%; height: auto; max-height: 300px; border: 3px inset var(--win-border-shadow); object-fit: contain;">
-    <p style="font-family: inherit; font-weight: bold; margin: 15px 0;">¡Esta foto la tome en el cumpleaños de mi mejos amiga! ✨</p>
+    <img id="imagen-secreta" src="" alt="Foto secreta" style="max-width: 100%; height: auto; max-height: 300px; border: 3px inset var(--win-border-shadow); object-fit: contain;">
+    <p id="texto-foto" style="font-family: inherit; font-weight: bold; margin: 15px 0;"></p>
     <button class="win-btn" onclick="cerrarNotificacion('ventana-foto')">Cerrar</button>
   </div>
 </div>
@@ -541,14 +540,12 @@
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     var barraTitulo = elementoVentana.querySelector(".titlebar");
     
-    // Solo permitimos arrastrar desde la barra azul
     if (barraTitulo) { barraTitulo.onmousedown = iniciarArrastre; }
 
     function iniciarArrastre(e) {
       e = e || window.event;
       e.preventDefault();
       
-      // Si la ventana tiene un transform centrado, lo calculamos para que no dé un salto brusco al moverla
       if (window.getComputedStyle(elementoVentana).transform !== 'none') {
          let rect = elementoVentana.getBoundingClientRect();
          elementoVentana.style.transform = 'none';
@@ -580,7 +577,6 @@
     }
   }
 
-  // Aplicar arrastre a todas las ventanas cuando cargue la página
   window.onload = function() {
     hacerArrastrable(document.getElementById("main-window"));
     hacerArrastrable(document.getElementById("notificacion-juego"));
@@ -596,7 +592,6 @@
     document.getElementById("main-window").style.display = "none";
     document.querySelectorAll('.popup-overlay').forEach(el => el.style.display = 'none');
     
-    // Mostramos la Pantalla Azul (BSOD)
     document.getElementById("bsod").style.display = "flex";
     
     let tiempoRestante = 67;
@@ -627,10 +622,28 @@
     reiniciarJuego();
   }
 
+
+  // --- NUEVO SISTEMA DE FOTOS RANDOM ---
+  const galeriaSecreta = [
+    { src: "Fotos/foto1.jpg", texto: "¡Una tarde increíble por ahí! 🌟" },
+    { src: "Fotos/foto2.jpg", texto: "Jugando Kerbal Space Program un rato 🚀" },
+    { src: "Fotos/foto3.jpg", texto: "Mi rincón favorito para programar 💻" },
+    { src: "Fotos/foto4.jpg", texto: "Comiendo algo rico el fin de semana 🍕" },
+    { src: "Fotos/foto5.jpg", texto: "¡Esta foto la tomé en el cumpleaños de mi mejor amiga! ✨" }
+  ];
+
   function abrirFoto() {
     cerrarNotificacion('notificacion-foto');
+    
+    const indiceRandom = Math.floor(Math.random() * galeriaSecreta.length);
+    const fotoElegida = galeriaSecreta[indiceRandom];
+    
+    document.getElementById("imagen-secreta").src = fotoElegida.src;
+    document.getElementById("texto-foto").innerText = fotoElegida.texto;
+    
     document.getElementById("ventana-foto").style.display = "flex";
   }
+
 
   // --- LÓGICA DE TRES EN RAYA (CONTRA BOT) ---
   let tablero = ["", "", "", "", "", "", "", "", ""];
@@ -720,18 +733,18 @@
 
   var map = L.map('miMapa').setView([0, -70], 3); 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
-  L.marker([-31.4201, -64.1888]).addTo(map).bindPopup('📍 Córdoba, Argentina');
-  L.marker([-34.6037, -58.3816]).addTo(map).bindPopup('📍 Buenos Aires, Argentina');
-  L.marker([-26.833210, -65.203711]).addTo(map).bindPopup('📍 Tucumán, Argentina');
-  L.marker([-27.784230, -64.264459]).addTo(map).bindPopup('📍 Santiago del Estero, Argentina');
-  L.marker([-25.5165, -54.5854]).addTo(map).bindPopup('📍 Cataratas del Iguazú, Brasil');
-  L.marker([-8.4845, -34.9997]).addTo(map).bindPopup('📍 Porto de Galinhas, Brasil');
-  L.marker([-5.784139, -35.199947]).addTo(map).bindPopup('📍 Natal, Brasil.');
-  L.marker([8.9824, -79.5199]).addTo(map).bindPopup('📍 Ciudad de Panamá, Panamá');
-  L.marker([18.5601, -68.3725]).addTo(map).bindPopup('📍 Punta Cana, Rep. Dominicana');
-  L.marker([25.7617, -80.1918]).addTo(map).bindPopup('📍 Miami, FL, EE.UU.');
-  L.marker([28.5384, -81.3789]).addTo(map).bindPopup('📍 Orlando, FL, EE.UU.');
-  L.marker([40.7128, -74.0060]).addTo(map).bindPopup('📍 Nueva York, EE.UU.');
+  L.marker([-31.4201, -64.1888]).addTo(map).bindPopup('📍 Córdoba, Argentina');
+  L.marker([-34.6037, -58.3816]).addTo(map).bindPopup('📍 Buenos Aires, Argentina');
+  L.marker([-26.833210, -65.203711]).addTo(map).bindPopup('📍 Tucumán, Argentina');
+  L.marker([-27.784230, -64.264459]).addTo(map).bindPopup('📍 Santiago del Estero, Argentina');
+  L.marker([-25.5165, -54.5854]).addTo(map).bindPopup('📍 Cataratas del Iguazú, Brasil');
+  L.marker([-8.4845, -34.9997]).addTo(map).bindPopup('📍 Porto de Galinhas, Brasil');
+  L.marker([-5.784139, -35.199947]).addTo(map).bindPopup('📍 Natal, Brasil.');
+  L.marker([8.9824, -79.5199]).addTo(map).bindPopup('📍 Ciudad de Panamá, Panamá');
+  L.marker([18.5601, -68.3725]).addTo(map).bindPopup('📍 Punta Cana, Rep. Dominicana');
+  L.marker([25.7617, -80.1918]).addTo(map).bindPopup('📍 Miami, FL, EE.UU.');
+  L.marker([28.5384, -81.3789]).addTo(map).bindPopup('📍 Orlando, FL, EE.UU.');
+  L.marker([40.7128, -74.0060]).addTo(map).bindPopup('📍 Nueva York, EE.UU.');
   
 
   function getClima() {
