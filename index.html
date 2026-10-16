@@ -44,7 +44,33 @@
     min-height: 100vh;
     color: var(--win-text);
     box-sizing: border-box;
-    overflow: hidden; 
+    overflow: hidden;
+    text-shadow: 0.4px 0 0 rgba(255, 0, 0, 0.12), -0.4px 0 0 rgba(0, 255, 255, 0.12);
+  }
+
+  /* --- EFECTO RETRO LEVE (CRT SCANLINES + VIÑETA SUAVE) --- */
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: 
+      repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.05) 0px,
+        rgba(0, 0, 0, 0.05) 1px,
+        transparent 1px,
+        transparent 3px
+      ),
+      radial-gradient(
+        circle,
+        transparent 65%,
+        rgba(0, 0, 0, 0.22) 100%
+      );
+    pointer-events: none;
+    z-index: 10000;
   }
 
   a { color: var(--win-text); }
@@ -81,7 +107,7 @@
     border-right-color: var(--win-border-dark);
     border-bottom-color: var(--win-border-dark);
     width: 95%; 
-    max-width: 950px;
+    max-width: 850px;
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
     padding: 3px;
     display: flex;
@@ -129,6 +155,7 @@
     gap: 4px;
     margin-top: 15px;
     padding: 0 10px;
+    flex-wrap: wrap;
   }
 
   .tab {
@@ -239,10 +266,69 @@
   }
   .status-section {
     border-right: 2px solid var(--win-border-shadow); border-left: 2px solid var(--win-border-light);
-    padding: 0 15px; display: flex; align-items: center;
+    padding: 0 15px; display: flex; align-items: center; gap: 6px;
   }
   .status-section:first-child { border-left: none; padding-left: 0; flex-grow: 1; }
   .status-section:last-child { border-right: none; padding-right: 0; }
+
+  /* --- SECCIÓN DE MENSAJES (GUESTBOOK EN PESTAÑA) --- */
+  .guestbook-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .mensajes-lista {
+    background-color: #ffffff;
+    border: 2px inset var(--win-border-shadow);
+    height: 220px;
+    overflow-y: auto;
+    padding: 10px;
+    font-size: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .mensaje-item {
+    border-bottom: 1px dotted #808080;
+    padding-bottom: 5px;
+    word-wrap: break-word;
+  }
+  .mensaje-autor {
+    font-weight: bold;
+    color: #000080;
+  }
+  .mensaje-fecha {
+    font-size: 0.7rem;
+    color: #666;
+    margin-left: 5px;
+  }
+  .visitas-box {
+    background-color: #e8e8e8;
+    border: 2px inset var(--win-border-shadow);
+    padding: 6px 10px;
+    font-size: 0.78rem;
+    max-height: 85px;
+    overflow-y: auto;
+  }
+  .win-input {
+    width: 100%;
+    padding: 5px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    border: 2px inset var(--win-border-shadow);
+    background-color: #fff;
+  }
+
+  /* --- ICONO RETRO DE TEXTO --- */
+  .retro-badge {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #000080;
+    border: 2px inset var(--win-border-shadow);
+    background: #e8e8e8;
+    padding: 6px 10px;
+    display: inline-block;
+  }
 
   /* --- POPUPS Y JUEGO --- */
   .popup-overlay {
@@ -309,7 +395,8 @@
 
   /* --- MEDIA QUERIES PARA CELULARES --- */
   @media (max-width: 768px) {
-    #main-window { transform: none; top: 0; left: 0; position: relative; width: 100%; }
+    body { overflow-y: auto; flex-direction: column; padding: 10px; }
+    #main-window { transform: none; top: 0; left: 0; position: relative; width: 100%; margin-bottom: 15px; }
     .tabs { flex-wrap: wrap; gap: 2px; }
     .tab { flex: 1 1 45%; text-align: center; margin-bottom: 2px; }
     .tab-content { padding: 15px 10px; }
@@ -336,7 +423,7 @@
     <br>
     <p>* Has cometido una acción ilegal (Intentar cerrar mi página).</p>
     <p>* El sistema se ha bloqueado por seguridad.</p>
-    <p>* Ahora deberás reflexionar sobre tus actos en la carcel cibernética durante:</p>
+    <p>* Ahora deberás reflexionar sobre tus actos en la cárcel cibernética durante:</p>
     <div style="text-align: center; font-size: 3rem; margin: 40px 0; font-weight: bold; color: red;">
       <span id="contador-castigo">67</span> SEC
     </div>
@@ -354,7 +441,7 @@
   </div>
   <div class="popup-body">
     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-      <span style="font-size: 35px;">⚠️</span>
+      <span class="retro-badge">[!]</span>
       <p style="margin: 0; font-weight: bold;">¡Juega este juego ya mismo o la PC explotará!</p>
     </div>
     <div style="display: flex; justify-content: center; gap: 10px;">
@@ -399,8 +486,8 @@
   </div>
   <div class="popup-body">
     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-      <span style="font-size: 35px;">✉️</span>
-      <p style="margin: 0; font-weight: bold;">¡Hey! Tienes que ver esta foto de Carlo...</p>
+      <span class="retro-badge">[MSG]</span>
+      <p style="margin: 0; font-weight: bold;">¡Hey! Tienes que ver esta foto!</p>
     </div>
     <div style="display: flex; justify-content: center; gap: 10px;">
       <button class="win-btn" onclick="abrirFoto()">Ver foto</button>
@@ -441,6 +528,7 @@
     <button class="tab" onclick="openTab(event, 'map')">travel map.html</button>
     <button class="tab" onclick="openTab(event, 'blog')">blog.html</button>
     <button class="tab" onclick="openTab(event, 'fun')">fun stuff.html</button>
+    <button class="tab" id="tab-btn-mensajes" onclick="openTab(event, 'mensajes')">mensajes.html</button>
   </div>
 
   <div id="about" class="tab-content active">
@@ -477,7 +565,7 @@
   <div id="blog" class="tab-content">
     <h2>mi mini-blog</h2>
     <div class="blog-placeholder">
-      <span style="font-size: 40px; margin-bottom: 10px;">🚧</span>
+      <span class="retro-badge" style="margin-bottom: 12px;">[EN CONSTRUCCION]</span>
       <h3 style="margin: 0;">coming soon...</h3>
       <p style="color: #555; margin-top: 5px;">estoy programando un blogcito para esta sección. ¡vuelve pronto!</p>
     </div>
@@ -486,7 +574,7 @@
   <div id="fun" class="tab-content">
     <div class="fun-grid">
       <div class="mini-window">
-        <div class="mini-titlebar"><span>🎵 i'm listening to</span></div>
+        <div class="mini-titlebar"><span>i'm listening to</span></div>
         <div class="mini-content" style="align-items: center;">
           <img id="music-art" class="album-art" src="" alt="Album Art">
           <div>
@@ -497,7 +585,7 @@
       </div>
       
       <div class="mini-window">
-        <div class="mini-titlebar"><span>📷 my camera roll</span></div>
+        <div class="mini-titlebar"><span>my camera roll</span></div>
         <div class="mini-content" style="padding: 10px; flex-direction: column; align-items: center;">
           <div class="photo-container">
             <img id="mis-fotos" class="photo-slideshow" src="Fotos/foto1.jpg" alt="Mis capturas">
@@ -507,9 +595,9 @@
       </div>
 
       <div class="mini-window">
-        <div class="mini-titlebar"><span>🌤️ weather report</span></div>
+        <div class="mini-titlebar"><span>weather report</span></div>
         <div class="mini-content" style="align-items: center;">
-          <span id="weather-icon" style="font-size: 40px;">⏳</span>
+          <span id="weather-icon" class="retro-badge">[...]</span>
           <div>
             <h3 id="weather-desc" style="margin:0; text-transform: capitalize;">Cargando clima...</h3>
             <p id="weather-temp" style="margin: 5px 0; font-weight:bold; color: #000080;"></p>
@@ -527,16 +615,315 @@
     </div>
   </div>
 
+  <!-- PESTAÑA DE MENSAJES (GUESTBOOK) -->
+  <div id="mensajes" class="tab-content">
+    <div class="guestbook-body">
+      <div style="font-weight: bold; font-size: 1rem; color: #000080;">¡Deja un mensajito en el muro!</div>
+      
+      <!-- Lista de mensajes -->
+      <div id="lista-mensajes" class="mensajes-lista">
+        <div style="color: #666; text-align: center; margin-top: 70px;">Cargando mensajes...</div>
+      </div>
+
+      <!-- Formulario para enviar mensaje -->
+      <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+        <input type="text" id="input-nombre" class="win-input" style="flex: 1 1 180px;" placeholder="Tu nombre o apodo..." maxlength="25">
+        <input type="text" id="input-mensaje" class="win-input" style="flex: 2 1 300px;" placeholder="Escribe tu mensaje aquí..." maxlength="140" onkeypress="if(event.key === 'Enter') enviarMensaje()">
+        <button class="win-btn" onclick="enviarMensaje()">Enviar</button>
+      </div>
+
+      <!-- Registro de quién se unió -->
+      <div style="font-weight: bold; font-size: 0.8rem; margin-top: 4px;">Últimos en unirse a la web:</div>
+      <div id="lista-visitas" class="visitas-box">
+        Cargando registro...
+      </div>
+    </div>
+  </div>
+
   <div class="status-bar">
-    <div class="status-section">Status: Online & Ready</div>
-    <div class="status-section">Visitor ID: 042</div>
+    <div class="status-section">
+      Status: Online & Ready
+      <button class="win-btn" style="padding: 1px 8px; margin-left: 6px; font-size: 0.75rem;" onclick="document.getElementById('tab-btn-mensajes').click()">Abrir Chat</button>
+      <button id="btn-sonido" class="win-btn" style="padding: 1px 8px; font-size: 0.75rem;" onclick="alternarSonido()">Sonido: ON</button>
+    </div>
+    <div class="status-section" id="visitor-counter">Visitor ID: 042</div>
     <div class="status-section" id="reloj">00:00:00</div>
   </div>
 </div>
 
 <script>
+  // =========================================================================
+  // --- 0. MOTOR DE SONIDOS CLÁSICOS DE WINDOWS 98 ---
+  // =========================================================================
+  let sonidoActivo = true;
+  let audioCtx = null;
+
+  const audiosWin98 = {
+    mensaje: "https://www.myinstants.com/media/sounds/windows-98-chimes.mp3",
+    bsod: "https://www.myinstants.com/media/sounds/windows-98-chord.mp3",
+    alerta: "https://www.myinstants.com/media/sounds/windows-98-exclamation.mp3",
+    victoria: "https://www.myinstants.com/media/sounds/tada_1.mp3"
+  };
+
+  function obtenerAudioCtx() {
+    if (!audioCtx) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) audioCtx = new AudioContextClass();
+    }
+    if (audioCtx && audioCtx.state === "suspended") {
+      audioCtx.resume();
+    }
+    return audioCtx;
+  }
+
+  function alternarSonido() {
+    sonidoActivo = !sonidoActivo;
+    const btn = document.getElementById("btn-sonido");
+    btn.innerText = sonidoActivo ? "Sonido: ON" : "Sonido: OFF";
+    if (sonidoActivo) reproducirSonidoWin98("mensaje");
+  }
+
+  function sintetizarSonidoWin98(tipo) {
+    const ctx = obtenerAudioCtx();
+    if (!ctx) return;
+    const ahora = ctx.currentTime;
+
+    if (tipo === "mensaje") {
+      const notas = [587.33, 880, 1174.66, 1760];
+      notas.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(freq, ahora + idx * 0.055);
+        gain.gain.setValueAtTime(0.18, ahora + idx * 0.055);
+        gain.gain.exponentialRampToValueAtTime(0.001, ahora + idx * 0.055 + 0.45);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ahora + idx * 0.055);
+        osc.stop(ahora + idx * 0.055 + 0.45);
+      });
+    } else if (tipo === "bsod") {
+      const freqsError = [196.00, 233.08, 293.66, 392.00];
+      freqsError.forEach(freq => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(freq, ahora);
+        gain.gain.setValueAtTime(0.16, ahora);
+        gain.gain.exponentialRampToValueAtTime(0.001, ahora + 0.75);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ahora);
+        osc.stop(ahora + 0.75);
+      });
+      const beep = ctx.createOscillator();
+      const beepGain = ctx.createGain();
+      beep.type = "square";
+      beep.frequency.setValueAtTime(800, ahora + 0.25);
+      beepGain.gain.setValueAtTime(0.08, ahora + 0.25);
+      beepGain.gain.exponentialRampToValueAtTime(0.001, ahora + 0.9);
+      beep.connect(beepGain);
+      beepGain.connect(ctx.destination);
+      beep.start(ahora + 0.25);
+      beep.stop(ahora + 0.9);
+    } else if (tipo === "alerta") {
+      [523.25, 659.25].forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, ahora + idx * 0.09);
+        gain.gain.setValueAtTime(0.2, ahora + idx * 0.09);
+        gain.gain.exponentialRampToValueAtTime(0.001, ahora + idx * 0.09 + 0.35);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ahora + idx * 0.09);
+        osc.stop(ahora + idx * 0.09 + 0.35);
+      });
+    } else if (tipo === "victoria") {
+      [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(freq, ahora + idx * 0.08);
+        gain.gain.setValueAtTime(0.2, ahora + idx * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.001, ahora + idx * 0.08 + 0.6);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ahora + idx * 0.08);
+        osc.stop(ahora + idx * 0.08 + 0.6);
+      });
+    } else if (tipo === "click") {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "square";
+      osc.frequency.setValueAtTime(1100, ahora);
+      gain.gain.setValueAtTime(0.05, ahora);
+      gain.gain.exponentialRampToValueAtTime(0.001, ahora + 0.025);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ahora);
+      osc.stop(ahora + 0.025);
+    }
+  }
+
+  function reproducirSonidoWin98(tipo) {
+    if (!sonidoActivo) return;
+
+    if (tipo === "click") {
+      sintetizarSonidoWin98("click");
+      return;
+    }
+
+    const url = audiosWin98[tipo];
+    if (url) {
+      const audio = new Audio(url);
+      audio.volume = 0.65;
+      audio.play().catch(() => {
+        sintetizarSonidoWin98(tipo);
+      });
+    } else {
+      sintetizarSonidoWin98(tipo);
+    }
+  }
+
+  // =========================================================================
+  // --- 1. SISTEMA DE MENSAJES Y REGISTRO DE VISITAS (TIEMPO REAL) ---
+  // =========================================================================
+  const DATABASE_URL = "https://mensajes-web-3b909-default-rtdb.firebaseio.com"; 
+  let cantidadMensajesPrevios = null;
+
+  function escaparHTML(texto) {
+    const div = document.createElement('div');
+    div.innerText = texto;
+    return div.innerHTML;
+  }
+
+  async function registrarEntrada() {
+    if (sessionStorage.getItem("visita_registrada")) return;
+    sessionStorage.setItem("visita_registrada", "true");
+
+    let ciudadPais = "Ubicación secreta";
+    try {
+      const geoRes = await fetch("https://ipapi.co/json/");
+      if (geoRes.ok) {
+        const geoData = await geoRes.json();
+        if (geoData.city && geoData.country_name) {
+          ciudadPais = `${geoData.city}, ${geoData.country_name}`;
+        }
+      }
+    } catch (e) {}
+
+    const fecha = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const apodoGuardado = localStorage.getItem("apodo_usuario") || "Visitante anónimo";
+    const nuevaVisita = { quien: apodoGuardado, desde: ciudadPais, hora: fecha };
+
+    if (DATABASE_URL) {
+      await fetch(`${DATABASE_URL}/visitas.json`, {
+        method: "POST",
+        body: JSON.stringify(nuevaVisita)
+      });
+    } else {
+      let visitasLocal = JSON.parse(localStorage.getItem("visitas_carlote") || "[]");
+      visitasLocal.push(nuevaVisita);
+      localStorage.setItem("visitas_carlote", JSON.stringify(visitasLocal));
+    }
+    cargarDatosComunidad();
+  }
+
+  async function cargarDatosComunidad() {
+    let mensajes = [];
+    let visitas = [];
+
+    if (DATABASE_URL) {
+      try {
+        const [resMsg, resVis] = await Promise.all([
+          fetch(`${DATABASE_URL}/mensajes.json`),
+          fetch(`${DATABASE_URL}/visitas.json`)
+        ]);
+        const dataMsg = await resMsg.json();
+        const dataVis = await resVis.json();
+        if (dataMsg) mensajes = Object.values(dataMsg);
+        if (dataVis) visitas = Object.values(dataVis);
+      } catch (e) {
+        console.error("Error cargando base de datos:", e);
+      }
+    } else {
+      mensajes = JSON.parse(localStorage.getItem("mensajes_carlote") || '[{"nombre":"Carlote","texto":"¡Bienvenidos a mi web! Dejen su mensajito acá abajo.","hora":"Hoy"}]');
+      visitas = JSON.parse(localStorage.getItem("visitas_carlote") || "[]");
+    }
+
+    if (cantidadMensajesPrevios !== null && mensajes.length > cantidadMensajesPrevios) {
+      reproducirSonidoWin98("mensaje");
+    }
+    cantidadMensajesPrevios = mensajes.length;
+
+    const contenedorMensajes = document.getElementById("lista-mensajes");
+    if (mensajes.length === 0) {
+      contenedorMensajes.innerHTML = '<div style="color:#666; text-align:center;">¡Sé el primero en dejar un mensaje!</div>';
+    } else {
+      contenedorMensajes.innerHTML = mensajes.slice(-40).map(m => `
+        <div class="mensaje-item">
+          <span class="mensaje-autor">${escaparHTML(m.nombre)}:</span>
+          <span class="mensaje-fecha">[${escaparHTML(m.hora || "")}]</span>
+          <div>${escaparHTML(m.texto)}</div>
+        </div>
+      `).join("");
+      contenedorMensajes.scrollTop = contenedorMensajes.scrollHeight;
+    }
+
+    const totalVisitas = 42 + visitas.length;
+    document.getElementById("visitor-counter").innerText = `Visitor ID: ${String(totalVisitas).padStart(3, '0')}`;
+
+    const contenedorVisitas = document.getElementById("lista-visitas");
+    if (visitas.length === 0) {
+      contenedorVisitas.innerHTML = "Esperando nuevos visitantes...";
+    } else {
+      contenedorVisitas.innerHTML = visitas.slice(-10).reverse().map(v => 
+        `<div>* <b>${escaparHTML(v.quien)}</b> (${escaparHTML(v.desde)}) - ${escaparHTML(v.hora)}</div>`
+      ).join("");
+    }
+  }
+
+  async function enviarMensaje() {
+    const inputNombre = document.getElementById("input-nombre");
+    const inputMensaje = document.getElementById("input-mensaje");
+    const nombre = inputNombre.value.trim() || "Anónimo";
+    const texto = inputMensaje.value.trim();
+
+    if (!texto) {
+      reproducirSonidoWin98("alerta");
+      return;
+    }
+
+    reproducirSonidoWin98("mensaje");
+
+    localStorage.setItem("apodo_usuario", nombre);
+    const fecha = new Date().toLocaleDateString([], { day: '2-digit', month: '2-digit' }) + " " + 
+                  new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const nuevoMensaje = { nombre, texto, hora: fecha };
+    inputMensaje.value = "";
+
+    if (DATABASE_URL) {
+      await fetch(`${DATABASE_URL}/mensajes.json`, {
+        method: "POST",
+        body: JSON.stringify(nuevoMensaje)
+      });
+    } else {
+      let mensajesLocal = JSON.parse(localStorage.getItem("mensajes_carlote") || '[{"nombre":"Carlote","texto":"¡Bienvenidos a mi web! Dejen su mensajito acá abajo.","hora":"Hoy"}]');
+      mensajesLocal.push(nuevoMensaje);
+      localStorage.setItem("mensajes_carlote", JSON.stringify(mensajesLocal));
+    }
+
+    cantidadMensajesPrevios = (cantidadMensajesPrevios || 0) + 1;
+    cargarDatosComunidad();
+  }
+
+  setInterval(cargarDatosComunidad, 6000);
+
   // --- 2. CÓDIGO PARA MOVER LAS VENTANAS ---
   function hacerArrastrable(elementoVentana) {
+    if (!elementoVentana) return;
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     var barraTitulo = elementoVentana.querySelector(".titlebar");
     
@@ -569,6 +956,7 @@
       
       elementoVentana.style.top = (elementoVentana.offsetTop - pos2) + "px";
       elementoVentana.style.left = (elementoVentana.offsetLeft - pos1) + "px";
+      elementoVentana.style.right = "auto";
     }
 
     function detenerArrastre() {
@@ -583,12 +971,20 @@
     hacerArrastrable(document.getElementById("notificacion-foto"));
     hacerArrastrable(document.getElementById("ventana-juego"));
     hacerArrastrable(document.getElementById("ventana-foto"));
+
+    const apodoGuardado = localStorage.getItem("apodo_usuario");
+    if (apodoGuardado) document.getElementById("input-nombre").value = apodoGuardado;
+
+    registrarEntrada();
+    cargarDatosComunidad();
   };
 
-  // --- 3. NUEVO SISTEMA DE CASTIGO (PANTALLA AZUL) ---
+  // --- 3. SISTEMA DE CASTIGO (PANTALLA AZUL CON SONIDO DE ERROR CRÍTICO) ---
   let intervaloCastigo;
 
   function iniciarCastigo() {
+    reproducirSonidoWin98("bsod");
+
     document.getElementById("main-window").style.display = "none";
     document.querySelectorAll('.popup-overlay').forEach(el => el.style.display = 'none');
     
@@ -606,15 +1002,26 @@
         clearInterval(intervaloCastigo);
         document.getElementById("bsod").style.display = "none";
         document.getElementById("main-window").style.display = "flex";
+        reproducirSonidoWin98("mensaje");
       }
     }, 1000);
   }
 
-  // --- SISTEMA DE POPUPS ORIGINAL ---
-  setTimeout(() => { document.getElementById("notificacion-juego").style.display = "flex"; }, 3000);
-  setTimeout(() => { document.getElementById("notificacion-foto").style.display = "flex"; }, 10000);
+  // --- SISTEMA DE POPUPS ORIGINAL CON SONIDO DE ALERTA ---
+  setTimeout(() => {
+    document.getElementById("notificacion-juego").style.display = "flex";
+    reproducirSonidoWin98("alerta");
+  }, 3000);
 
-  function cerrarNotificacion(id) { document.getElementById(id).style.display = "none"; }
+  setTimeout(() => {
+    document.getElementById("notificacion-foto").style.display = "flex";
+    reproducirSonidoWin98("alerta");
+  }, 10000);
+
+  function cerrarNotificacion(id) {
+    reproducirSonidoWin98("click");
+    document.getElementById(id).style.display = "none";
+  }
 
   function abrirJuego() {
     cerrarNotificacion('notificacion-juego');
@@ -622,14 +1029,13 @@
     reiniciarJuego();
   }
 
-
-  // --- NUEVO SISTEMA DE FOTOS RANDOM ---
+  // --- SISTEMA DE FOTOS RANDOM ---
   const galeriaSecreta = [
     { src: "Fotos/foto1.jpg", texto: "Mi viaje a New York!" },
     { src: "Fotos/foto2.jpg", texto: "Panama" },
-    { src: "Fotos/foto6.jpg", texto: "Comiendo en la sima del edificio SUMMIT en NY" },
-    { src: "Fotos/foto7.jpg", texto: "Comiendo un MCdonal" },
-    { src: "Fotos/foto5.jpg", texto: "¡Esta foto la tomé en el cumpleaños de mi mejor amiga! ✨" }
+    { src: "Fotos/foto6.jpg", texto: "Comiendo en la cima del edificio SUMMIT en NY" },
+    { src: "Fotos/foto7.jpg", texto: "Comiendo un McDonald's" },
+    { src: "Fotos/foto5.jpg", texto: "¡Esta foto la tomé en el cumpleaños de mi mejor amiga!" }
   ];
 
   function abrirFoto() {
@@ -644,7 +1050,6 @@
     document.getElementById("ventana-foto").style.display = "flex";
   }
 
-
   // --- LÓGICA DE TRES EN RAYA (CONTRA BOT) ---
   let tablero = ["", "", "", "", "", "", "", "", ""];
   let turnoHumano = true;
@@ -655,6 +1060,7 @@
 
   function hacerMovimientoHumano(indice) {
     if (tablero[indice] === "" && juegoActivo && turnoHumano) {
+      reproducirSonidoWin98("click");
       tablero[indice] = "X";
       let celda = document.getElementById("celda-" + indice);
       celda.innerText = "X";
@@ -698,19 +1104,26 @@
     }
 
     if (victoria) {
-      if (jugador === "X") { document.getElementById("estado-juego").innerText = "¡Ganaste! 🎉"; } 
-      else { document.getElementById("estado-juego").innerText = "¡La PC te ganó! 🤖"; }
+      if (jugador === "X") {
+        document.getElementById("estado-juego").innerText = "¡Ganaste!";
+        reproducirSonidoWin98("victoria");
+      } else {
+        document.getElementById("estado-juego").innerText = "¡La PC te ganó!";
+        reproducirSonidoWin98("bsod");
+      }
       juegoActivo = false; return true;
     }
 
     if (!tablero.includes("")) {
-      document.getElementById("estado-juego").innerText = "¡Empate! 😐";
+      document.getElementById("estado-juego").innerText = "¡Empate!";
+      reproducirSonidoWin98("alerta");
       juegoActivo = false; return true;
     }
     return false;
   }
 
   function reiniciarJuego() {
+    reproducirSonidoWin98("click");
     tablero = ["", "", "", "", "", "", "", "", ""];
     turnoHumano = true; juegoActivo = true;
     document.getElementById("estado-juego").innerText = "Tu turno (Eres la X)";
@@ -722,6 +1135,7 @@
 
   // --- OTRAS FUNCIONES (PESTAÑAS, MAPA, CLIMA, ETC) ---
   function openTab(evt, tabName) {
+    reproducirSonidoWin98("click");
     var tabcontent = document.getElementsByClassName("tab-content");
     for (var i = 0; i < tabcontent.length; i++) tabcontent[i].classList.remove("active");
     var tablinks = document.getElementsByClassName("tab");
@@ -733,20 +1147,19 @@
 
   var map = L.map('miMapa').setView([0, -70], 3); 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
-  L.marker([-31.4201, -64.1888]).addTo(map).bindPopup('📍 Córdoba, Argentina');
-  L.marker([-34.6037, -58.3816]).addTo(map).bindPopup('📍 Buenos Aires, Argentina');
-  L.marker([-26.833210, -65.203711]).addTo(map).bindPopup('📍 Tucumán, Argentina');
-  L.marker([-27.784230, -64.264459]).addTo(map).bindPopup('📍 Santiago del Estero, Argentina');
-  L.marker([-25.5165, -54.5854]).addTo(map).bindPopup('📍 Cataratas del Iguazú, Brasil');
-  L.marker([-8.4845, -34.9997]).addTo(map).bindPopup('📍 Porto de Galinhas, Brasil');
-  L.marker([-5.784139, -35.199947]).addTo(map).bindPopup('📍 Natal, Brasil.');
-  L.marker([8.9824, -79.5199]).addTo(map).bindPopup('📍 Ciudad de Panamá, Panamá');
-  L.marker([18.5601, -68.3725]).addTo(map).bindPopup('📍 Punta Cana, Rep. Dominicana');
-  L.marker([25.7617, -80.1918]).addTo(map).bindPopup('📍 Miami, FL, EE.UU.');
-  L.marker([28.5384, -81.3789]).addTo(map).bindPopup('📍 Orlando, FL, EE.UU.');
-  L.marker([40.7128, -74.0060]).addTo(map).bindPopup('📍 Nueva York, EE.UU.');
+  L.marker([-31.4201, -64.1888]).addTo(map).bindPopup('Córdoba, Argentina');
+  L.marker([-34.6037, -58.3816]).addTo(map).bindPopup('Buenos Aires, Argentina');
+  L.marker([-26.833210, -65.203711]).addTo(map).bindPopup('Tucumán, Argentina');
+  L.marker([-27.784230, -64.264459]).addTo(map).bindPopup('Santiago del Estero, Argentina');
+  L.marker([-25.5165, -54.5854]).addTo(map).bindPopup('Cataratas del Iguazú, Brasil');
+  L.marker([-8.4845, -34.9997]).addTo(map).bindPopup('Porto de Galinhas, Brasil');
+  L.marker([-5.784139, -35.199947]).addTo(map).bindPopup('Natal, Brasil.');
+  L.marker([8.9824, -79.5199]).addTo(map).bindPopup('Ciudad de Panamá, Panamá');
+  L.marker([18.5601, -68.3725]).addTo(map).bindPopup('Punta Cana, Rep. Dominicana');
+  L.marker([25.7617, -80.1918]).addTo(map).bindPopup('Miami, FL, EE.UU.');
+  L.marker([28.5384, -81.3789]).addTo(map).bindPopup('Orlando, FL, EE.UU.');
+  L.marker([40.7128, -74.0060]).addTo(map).bindPopup('Nueva York, EE.UU.');
   
-
   function getClima() {
     const apiKey = "204754d0fadd9e55232e4644dd583d88"; const ciudad = "Villa Carlos Paz"; 
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${ciudad}&appid=${apiKey}&units=metric&lang=es`)
@@ -754,7 +1167,7 @@
       .then(data => {
         document.getElementById("weather-desc").innerText = data.weather[0].description;
         document.getElementById("weather-temp").innerText = `${data.main.temp}°C - feels like ${data.main.feels_like}°C`;
-        document.getElementById("weather-icon").innerText = "☁️"; 
+        document.getElementById("weather-icon").innerText = "[METEO]"; 
       });
   }
   getClima();
@@ -769,7 +1182,7 @@
           document.getElementById("music-title").innerText = track.name;
           document.getElementById("music-artist").innerText = track.artist["#text"];
           if (track.image && track.image[2] && track.image[2]["#text"]) {
-              document.getElementById("music-art").src = track.image[2]["#text"];
+             document.getElementById("music-art").src = track.image[2]["#text"];
           }
         }
       }).catch(error => console.error("Error cargando música", error));
