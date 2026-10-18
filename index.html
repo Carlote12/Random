@@ -225,12 +225,104 @@
   }
   .social-icon { width: 35px; height: 35px; object-fit: contain; }
 
-  /* --- MAPA Y BLOG --- */
+  /* --- MAPA --- */
   .map-wrapper { width: 100%; height: 450px; border: 3px inset var(--win-border-shadow); }
-  .blog-placeholder {
-    display: flex; flex-direction: column; align-items: center; justify-content: center; 
-    height: 250px; border: 2px dashed var(--win-border-shadow); margin-top: 20px; 
-    background-color: #e8e8e8; text-align: center; padding: 20px;
+
+  /* --- SECCIÓN DE PROYECTOS EN BLOG (UN SOLO CUADRADO POR PROYECTO) --- */
+  .proyectos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .proyecto-cuadrado {
+    border: 2px solid;
+    border-color: var(--win-border-light) var(--win-border-shadow) var(--win-border-shadow) var(--win-border-light);
+    background-color: var(--win-bg);
+  }
+  .proyecto-interior {
+    background-color: #ffffff;
+    border: 2px inset var(--win-border-shadow);
+    margin: 10px;
+    padding: 15px;
+  }
+  .bio-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .bio-title-row h2 {
+    margin: 0;
+    color: #000080;
+    font-size: 1.35rem;
+  }
+  .bio-status-badge {
+    background-color: #008000;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 0.78rem;
+    padding: 3px 8px;
+    border: 2px outset #ffffff;
+  }
+  .bio-desc {
+    margin: 0 0 14px 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    padding-bottom: 12px;
+    border-bottom: 2px dotted var(--win-border-shadow);
+  }
+  .bio-updates-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .bio-update-card {
+    background-color: #f4f4f4;
+    border: 2px solid;
+    border-color: var(--win-border-light) var(--win-border-shadow) var(--win-border-shadow) var(--win-border-light);
+    padding: 10px 12px;
+  }
+  .bio-update-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+    border-bottom: 1px dotted #808080;
+    padding-bottom: 4px;
+  }
+  .bio-date {
+    color: #555;
+    font-weight: bold;
+  }
+  .bio-tag {
+    background-color: #000080;
+    color: #fff;
+    padding: 1px 6px;
+    font-size: 0.72rem;
+    font-weight: bold;
+  }
+  .bio-update-card h4 {
+    margin: 0 0 6px 0;
+    font-size: 1rem;
+    color: #000000;
+  }
+  .bio-update-card p {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.4;
+    color: #222;
+  }
+  .bio-update-card img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 8px;
+    border: 2px inset var(--win-border-shadow);
   }
 
   /* --- MINI VENTANAS --- */
@@ -421,9 +513,9 @@
     <p>A fatal exception 0E has occurred at 028:C0011E36 in VxD VMM(01) + 00010E36.<br>
        The current application will be terminated.</p>
     <br>
-    <p>* Has cometido una acción ilegal (Intentar cerrar mi página).</p>
-    <p>* El sistema se ha bloqueado por seguridad.</p>
-    <p>* Ahora deberás reflexionar sobre tus actos en la cárcel cibernética durante:</p>
+    <p>- Has cometido una acción ilegal (Intentar cerrar mi página).</p>
+    <p>- El sistema se ha bloqueado por seguridad.</p>
+    <p>- Ahora deberás reflexionar sobre tus actos en la cárcel cibernética durante:</p>
     <div style="text-align: center; font-size: 3rem; margin: 40px 0; font-weight: bold; color: red;">
       <span id="contador-castigo">67</span> SEC
     </div>
@@ -562,13 +654,9 @@
     </div>
   </div>
 
+  <!-- PESTAÑA BLOG: CADA PROYECTO EN SU PROPIO CUADRADO UNIFICADO -->
   <div id="blog" class="tab-content">
-    <h2>mi mini-blog</h2>
-    <div class="blog-placeholder">
-      <span class="retro-badge" style="margin-bottom: 12px;">[EN CONSTRUCCION]</span>
-      <h3 style="margin: 0;">coming soon...</h3>
-      <p style="color: #555; margin-top: 5px;">estoy programando un blogcito para esta sección. ¡vuelve pronto!</p>
-    </div>
+    <div id="contenedor-proyectos" class="proyectos-lista"></div>
   </div>
 
   <div id="fun" class="tab-content">
@@ -652,6 +740,69 @@
 </div>
 
 <script>
+  // =========================================================================
+  // --- MIS PROYECTOS (CADA PROYECTO EN SU PROPIO CUADRADO) ---
+  // =========================================================================
+  const misProyectos = [
+    {
+      ventanaTitulo: "proyecto_actual: Biointeligence.exe",
+      nombre: "Biointeligence",
+      estado: "EN DESARROLLO",
+      descripcion: "Proyecto en el que estoy trabajando actualmente. Acá voy subiendo todas las notas, avances y actualizaciones del desarrollo.",
+      actualizaciones: [
+        {
+          fecha: "18/10/2026",
+          categoria: "IDEA",
+          titulo: "Idea del proyecto",
+          texto: "La idea es un sistema inteligente de monitoreo para plantas de interior basado en un ESP32 y 3 sensores de humedad de suelo (uno en cada maceta). Transmite los datos al celular mediante un widget e incluye una pantalla física que alerta cuando falta agua y cuenta cuántas horas lleva la planta sin regarse. ",
+          imagen: "Fotos/foto15.png" // Si quieres mostrar una foto, pon la ruta entre las comillas (ej: "Fotos/avance1.jpg")
+        },
+        {
+          fecha: "10/10/2026",
+          categoria: "Hardware",
+          titulo: "Empezamos con el desarollo!!",
+          texto: "Busco todos los materiales (se los robo a la kiki jsjsjs). La mayoria los tengo solo me faltan dos sensores de humedad xd y empiezo a hacer las conexiones",
+          imagen: ""
+        }
+      ]
+    }
+    // Si en el futuro quieres agregar OTRO proyecto en otro cuadrado separado,
+    // solo pon una coma arriba y copia otro bloque igual aquí abajo.
+  ];
+
+  function cargarProyectosBlog() {
+    const contenedor = document.getElementById("contenedor-proyectos");
+    if (!contenedor) return;
+
+    contenedor.innerHTML = misProyectos.map(proyecto => `
+      <div class="proyecto-cuadrado">
+        <div class="mini-titlebar">
+          <span>${proyecto.ventanaTitulo}</span>
+        </div>
+        <div class="proyecto-interior">
+          <div class="bio-title-row">
+            <h2>${proyecto.nombre}</h2>
+            <span class="bio-status-badge">${proyecto.estado}</span>
+          </div>
+          <p class="bio-desc">${proyecto.descripcion}</p>
+          
+          <div class="bio-updates-list">
+            ${proyecto.actualizaciones.map(item => `
+              <div class="bio-update-card">
+                <div class="bio-update-meta">
+                  <span class="bio-tag">${item.categoria}</span>
+                  <span class="bio-date">[${item.fecha}]</span>
+                </div>
+                <h4>${item.titulo}</h4>
+                <p>${item.texto}</p>${item.imagen ? `<img src="${item.imagen}" alt="${item.titulo}">` : ""}
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+    `).join("");
+  }
+
   // =========================================================================
   // --- 0. MOTOR DE SONIDOS CLÁSICOS DE WINDOWS 98 ---
   // =========================================================================
@@ -975,6 +1126,7 @@
     const apodoGuardado = localStorage.getItem("apodo_usuario");
     if (apodoGuardado) document.getElementById("input-nombre").value = apodoGuardado;
 
+    cargarProyectosBlog();
     registrarEntrada();
     cargarDatosComunidad();
   };
